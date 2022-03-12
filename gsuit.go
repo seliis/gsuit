@@ -42,24 +42,24 @@ func main() {
 	refresh()
 
 	for {
-		conn, err := network.Accept()
-		if err != nil {
+		if conn, err := network.Accept(); err == nil {
+			go printout(conn)
+		} else {
 			log.Fatal(err)
 		}
-		go printout(conn)
 	}
 }
 
 func printout(conn net.Conn) {
 	recv := make([]byte, 8)
 	for {
-		msg, err := conn.Read(recv)
-		if err != nil {
+		if msg, err := conn.Read(recv); err == nil {
+			fmt.Println(string(recv[:msg]))
+		} else {
 			conn.Close()
 			refresh()
 			return
 		}
-		fmt.Println(string(recv[:msg]))
 	}
 }
 
